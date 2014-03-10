@@ -1,11 +1,11 @@
-import java.io.InputStream
-import scala.io.BufferedSource
 import java.io.FileInputStream
-import scala.io.BufferedSource
 import java.text.Normalizer
 import java.util.GregorianCalendar
 import scala.collection.GenSeq
 import scala.collection.parallel.immutable.ParVector
+import scala.io.BufferedSource
+import scala.io.BufferedSource
+import java.io.FileWriter
 
 class DictReader(filename: String = "/usr/share/hunspell/fr.dic") {
   val lines: List[String] = getLinesFromFile;
@@ -93,45 +93,32 @@ class DictReader(filename: String = "/usr/share/hunspell/fr.dic") {
 }
 object Hi extends App {
   override def main(args: Array[String]): Unit = {
-    val dr = new DictReader
-//
-//    println("nb lignes => " + dr.lines.length);
-//    println("nb mots => " + dr.words.length);
-//    println("nb true palindromes " + dr.newPalindromes.length)
-//    var start = new GregorianCalendar();
-//    var longestWord = dr.longestWordFoldLeft;
-//    var end = new GregorianCalendar();
-//    println("longest word (foldLeft): " + longestWord + " (" + (end.getTimeInMillis() - start.getTimeInMillis()) + " ms)")
-//    start = new GregorianCalendar();
-//    longestWord = dr.longestWordFoldRight;
-//    end = new GregorianCalendar();
-//    println("longest word (foldRight): " + longestWord + " (" + (end.getTimeInMillis() - start.getTimeInMillis()) + " ms)")
-
-    //println(dr.complete("e..a.t"))
-
-    //    start = new GregorianCalendar();
-    //    val reverseList = dr.reversedWordsList
-    //    end = new GregorianCalendar();
-    //    println("reverse word (List): (" + (end.getTimeInMillis() - start.getTimeInMillis()) + " ms)")
-    //    
-    //    start = new GregorianCalendar();
-    //    val reverseSet = dr.reversedWordsSet
-    //    end = new GregorianCalendar();
-    //    println("reverse word (Set): (" + (end.getTimeInMillis() - start.getTimeInMillis()) + " ms)")
-    //    println("reverseSet.size : " + reverseSet.size)
-    //    println("reverseList.size : " + reverseList.size)
-//    start = new GregorianCalendar();
-//    longestWord = dr.longestWordFold;
-//    end = new GregorianCalendar();
-//    println("longest word (fold): " + longestWord + " (" + (end.getTimeInMillis() - start.getTimeInMillis()) + " ms)")
-    //bench(dr.words.toStream)
-    bench(dr.words.toList)
-    bench(dr.words.toVector)
-    val parVector = dr.words.toVector.par
-    bench(parVector)
+    val dictReader = new DictReader
+    bench("List", dictReader.words.iterator, _.toList)
+    bench("Vector", dictReader.words.iterator, _.toVector)
+    bench("ParVector", dictReader.words.iterator, _.toVector.par)
   }
   
-  def bench(words : GenSeq[String]): Unit= {
+   def bench(collname: String, words : Iterator[String], toColl: Iterator[String] => GenSeq[String]): Unit = {
+    val writer = new FileWriter(("list.csv"), true)
+    val reader = new Reader(toColl(words))
+    writer.write(collname + ", ")
+    writer.write("ALL" + ", ")
+    writer.write("\n")
+    val start = System.nanoTime()
+    reader.truePalindromes
+    val end = System.nanoTime()
+    val elapsed = end - start
+    writer.write("palindromes" + ",")
+    writer.write(elapsed + ",")
+    writer.write("\n")
+    writer.flush()
+    writer.close()
+  }
+
+  
+  
+  def run(words : GenSeq[String]): Unit= {
     var dr = new Reader(words)
     println("Implémentation: ")
     

@@ -1,6 +1,6 @@
-import scala.collection.GenSeq
 import java.text.Normalizer
-import scala.collection.GenSet
+
+import scala.collection.GenSeq
 
 case class Reader(words: GenSeq[String]) {
 
