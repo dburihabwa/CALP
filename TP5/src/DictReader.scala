@@ -94,9 +94,10 @@ class DictReader(filename: String = "/usr/share/hunspell/fr.dic") {
 object Hi extends App {
   override def main(args: Array[String]): Unit = {
     val dictReader = new DictReader
-    bench("List", dictReader.words.iterator, _.toList)
-    bench("Vector", dictReader.words.iterator, _.toVector)
-    bench("ParVector", dictReader.words.iterator, _.toVector.par)
+    val reader = Reader(dictReader.words)
+    reader.bench("List",  _.toList)
+    reader.bench("Vector", _.toVector)
+    reader.bench("ParVector", _.toVector.par)
   }
   
    def bench(collname: String, words : Iterator[String], toColl: Iterator[String] => GenSeq[String]): Unit = {
