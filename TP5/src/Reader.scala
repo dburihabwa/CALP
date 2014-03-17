@@ -69,49 +69,45 @@ case class Reader(words: GenSeq[String]) {
 		val max = 400000
 
 		val range = 1 to max by step
-		val resultsPalindrome: Array[Long] = Array(20)
-		val resultsLongestWord: Array[Long] = Array(20)
-		val resultsComplete: Array[Long] = Array(20)
-		val resultsReversed: Array[Long] = Array(20)
+		var resultsPalindrome = "palindromes, "
+		var resultsLongestWord =  "longest, "
+		var resultsComplete = "complete, "
+		var resultsReversed = "reversed, "
 		for (i <- range) {
 			val reader = new Reader(toColl(words.iterator.take(i)))
 			var start = System.nanoTime()
 			reader.truePalindromes
 			var end = System.nanoTime()
 			var elapsed = end - start
-			resultsPalindrome :+ elapsed
+			resultsPalindrome += elapsed + ","
 			start = System.nanoTime()
 			reader.longestWordFold
 			end = System.nanoTime()
 			elapsed = end - start
-			resultsLongestWord :+ elapsed
+			resultsLongestWord += elapsed + ","
 			start = System.nanoTime()
 			reader.complete("e..a.t")
 			end = System.nanoTime()
 			elapsed = end - start
-			resultsComplete :+ elapsed
+			resultsComplete  += elapsed + ","
 			start = System.nanoTime()
 			reader.reversedWords
 			end = System.nanoTime()
 			elapsed = end - start
-			resultsReversed :+ elapsed
+			resultsReversed  += elapsed + ","
 			println("done for first" + i)
 		}
 		val writer = new FileWriter(("list2.csv"), true)
 		writer.write(collname + ", ")
 		writer.write(range.mkString(", "))
 		writer.write("\n")
-		writer.write("palindromes, ")
-		writer.write(resultsPalindrome.mkString(", "))
+		writer.write(resultsPalindrome)
 		writer.write("\n")
-		writer.write("longest, ")
-		writer.write(resultsLongestWord.mkString(", "))
+		writer.write(resultsLongestWord)
 		writer.write("\n")
-		writer.write("complete, ")
-		writer.write(resultsComplete.mkString(", "))
+		writer.write(resultsComplete)
 		writer.write("\n")
-		writer.write("reversed, ")
-		writer.write(resultsReversed.mkString(", "))
+		writer.write(resultsReversed)
 		writer.write("\n")
 
 		writer.flush()
