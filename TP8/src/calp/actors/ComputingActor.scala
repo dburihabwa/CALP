@@ -18,10 +18,10 @@ class ComputingActor(maxIter : Int) extends Actor {
 	//println("Starting ComputingActor " + self.path) // for debug
 	
 	def receive = {
-		case ComputeMessage(x, y, cs, palette, f, refreshingActor) => {
+		case ComputingMessage(x, y, cs, palette, f, refreshingActor) => {
 			val p = palettes(palette)
 			val pixels = fractale(f)(cs).image(maxIter, p, cs)
-			refreshingActor ! RefreshMessage(x, y, pixels)
+			refreshingActor ! RefreshingMessage(x, y, pixels)
 		}			
 	}
 }

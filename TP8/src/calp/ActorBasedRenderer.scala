@@ -39,9 +39,7 @@ class ActorBasedRenderer(
 			i0 = x * tileSize
 			j0 = cs.height - ((y + 1) * tileSize)
 		} {
-			//val computingName = "compute" + i0 + "-" + j0
-			//val computingActor = system.actorOf(Props(new ComputingActor(maxIter)), name = computingName)
-			compActs(x)(y) ! ComputeMessage(i0, j0, tiles(x)(y), palette, r, refreshingActor)
+			compActs(x)(y) ! ComputingMessage(i0, j0, tiles(x)(y), palette, r, refreshingActor)
 		}
 	}
 }

@@ -27,7 +27,7 @@ class ActorRouterRenderer(
     val tiles = cs.tiles(tileSize)
     val system = ActorSystem.create("renderer")
     val refreshingActor = system.actorOf(Props(new RefreshingActor(img, ip)), name = "refreshingActor")
-    val compActs = system.actorOf(
+    val computingActors = system.actorOf(
       Props(new ComputingActor(maxIter)).withRouter(
         RoundRobinRouter(nrOfInstances = Runtime.getRuntime().availableProcessors())), name = "comp")
     for {
@@ -36,9 +36,7 @@ class ActorRouterRenderer(
       i0 = x * tileSize
       j0 = cs.height - ((y + 1) * tileSize)
     } {
-      //val computingName = "compute" + i0 + "-" + j0
-      //val computingActor = system.actorOf(Props(new ComputingActor(maxIter)), name = computingName)
-      compActs ! ComputeMessage(i0, j0, tiles(x)(y), palette, r, refreshingActor)
+      computingActors ! ComputingMessage(i0, j0, tiles(x)(y), palette, r, refreshingActor)
     }
 
   }

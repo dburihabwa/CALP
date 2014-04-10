@@ -14,7 +14,7 @@ import calp.util.ImagePanel
 
 class RefreshingActor(img: ImageBuffer, ip: ImagePanel) extends Actor {
 	def receive = {
-		case RefreshMessage(x, y, pixels) => {
+		case RefreshingMessage(x, y, pixels) => {
 			img.blit(x, y, pixels)
             ip.repaint
 		}

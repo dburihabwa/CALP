@@ -13,6 +13,6 @@ import calp.mandel.Rectangle
 import calp.util.Complex
 
 object messages {
-	case class ComputeMessage(x:Int, y: Int, cs: CoordinateSystem, palette: String, fractale: String, refreshingActor: ActorRef)
-	case class RefreshMessage(x:Int, y:Int, pixels: Array[Array[Int]])
+	case class ComputingMessage(x:Int, y: Int, cs: CoordinateSystem, palette: String, fractale: String, refreshingActor: ActorRef)
+	case class RefreshingMessage(x:Int, y:Int, pixels: Array[Array[Int]])
 }
