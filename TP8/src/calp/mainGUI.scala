@@ -39,7 +39,6 @@ object mainGUI extends SimpleSwingApplication {
   val palette = "color2"
   val tileSize = 25
   val scalingFactor = Map(0 -> 0.33, 256 -> 2.0)
-
   // main window
   def top = new MainFrame {
     title = "Mandelbrot Explorer"
@@ -51,7 +50,9 @@ object mainGUI extends SimpleSwingApplication {
         image = img.buffer
         var currentCS = initCS
         // initializing the renderer
-        val r = new ActorBasedRenderer(fractal, center, img, this, tileSize, maxIter, palette, currentCS)
+       // val r1 = new Renderer(fractal, center, img, this, tileSize, maxIter, palette);
+       // val r2 = new ActorBasedRenderer(fractal, center, img, this, tileSize, maxIter, palette,currentCS);
+        val r = new ActorRouterRenderer(fractal, center, img, this, tileSize, maxIter, palette)
         // first rendering with the initial parameters
         r.render(currentCS)
         // zooming with the mouse clicks

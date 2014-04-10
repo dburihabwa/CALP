@@ -16,14 +16,30 @@ import akka.routing._
 import com.typesafe.config.ConfigFactory
 
 class ActorRouterRenderer(
-    r: String, c: Complex,
-    img: ImageBuffer,
-    ip: ImagePanel,
-    tileSize: Int = 1000,
-    maxIter: Int = 1000,
-    palette: String) extends Renderer(r, c, img, ip, tileSize, maxIter, palette) {
+  r: String, c: Complex,
+  img: ImageBuffer,
+  ip: ImagePanel,
+  tileSize: Int = 1000,
+  maxIter: Int = 1000,
+  palette: String) extends Renderer(r, c, img, ip, tileSize, maxIter, palette) {
 
   override def render(cs: CoordinateSystem) {
-    ???
+    val tiles = cs.tiles(tileSize)
+    val system = ActorSystem.create("renderer")
+    val refreshingActor = system.actorOf(Props(new RefreshingActor(img, ip)), name = "refreshingActor")
+    val compActs = system.actorOf(
+      Props(new ComputingActor(maxIter)).withRouter(
+        RoundRobinRouter(nrOfInstances = Runtime.getRuntime().availableProcessors())), name = "comp")
+    for {
+      x <- 0 until tiles.length
+      y <- 0 until tiles(0).length
+      i0 = x * tileSize
+      j0 = cs.height - ((y + 1) * tileSize)
+    } {
+      //val computingName = "compute" + i0 + "-" + j0
+      //val computingActor = system.actorOf(Props(new ComputingActor(maxIter)), name = computingName)
+      compActs ! ComputeMessage(i0, j0, tiles(x)(y), palette, r, refreshingActor)
+    }
+
   }
 }
