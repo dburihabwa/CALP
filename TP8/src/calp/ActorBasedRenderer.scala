@@ -12,6 +12,9 @@ import calp.mandel._
 import calp.actors._
 import akka.actor._
 import calp.actors.messages._
+import calp.actors.ComputingActor
+
+
 
 class ActorBasedRenderer(
 	r: String, c: Complex,
@@ -24,6 +27,18 @@ class ActorBasedRenderer(
 		extends Renderer(r, c, img, ip, tileSize, maxIter, palette) {
 
 	override def render(cs: CoordinateSystem) {
-		???
+		val tiles = cs.tiles(tileSize)
+		val system = ActorSystem.create("renderer")
+		val refreshingActor = system.actorOf(Props(new RefreshingActor(img, ip)), name = "refreshingActor")
+		for {
+			x <- 0 until tiles.length
+			y <- 0 until tiles(0).length
+			i0 = x * tileSize
+			j0 = cs.height - ((y + 1) * tileSize)
+		} yield {
+			val computingName = "compute" + i0 + "-" + j0
+			val computingActor = system.actorOf(Props(new ComputingActor(maxIter)), name = computingName)
+			computingActor ! ComputeMessage(i0, j0, cs, palette, r, refreshingActor)
+		}
 	}
 }

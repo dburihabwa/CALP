@@ -13,9 +13,15 @@ import calp.util._
 import calp.actors.messages._
 import akka.actor.ActorRef
 
-class ComputingActor extends Actor {
+class ComputingActor(maxIter : Int) extends Actor {
+	
 	println("Starting ComputingActor " + self.path) // for debug
+	
 	def receive = {
-		???
+		case ComputeMessage(x, y, cs, palette, f, refreshingActor) => {
+			val p = palettes(palette)
+			val pixels = fractale(f)(cs).image(maxIter, p, cs)
+			refreshingActor ! RefreshMessage(x, y, pixels)
+		}			
 	}
 }

@@ -44,16 +44,16 @@ class Renderer(
       y <- 0 until tiles(0).length
       i0 = x * tileSize
       j0 = cs.height - ((y + 1) * tileSize)
-    } yield {
-      future {
-        fractale(r, c)(cs).image(maxIter, palettes(palette), tiles(x)(y))
-      } map {
-        src =>
-          {
-            img.blit(i0, j0, src)
-            ip.repaint
-          }
-      }
+		} yield {
+			future {
+				fractale(r, c)(cs).image(maxIter, palettes(palette), tiles(x)(y))
+			} map {
+				src =>
+					{
+						img.blit(i0, j0, src)
+						ip.repaint
+					}
+			}
     }
   }
 }

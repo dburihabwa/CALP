@@ -51,7 +51,7 @@ object mainGUI extends SimpleSwingApplication {
         image = img.buffer
         var currentCS = initCS
         // initializing the renderer
-        val r = new Renderer(fractal, center, img, this, tileSize, maxIter, palette)
+        val r = new ActorBasedRenderer(fractal, center, img, this, tileSize, maxIter, palette, currentCS)
         // first rendering with the initial parameters
         r.render(currentCS)
         // zooming with the mouse clicks
