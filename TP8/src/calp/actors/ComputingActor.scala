@@ -15,7 +15,7 @@ import akka.actor.ActorRef
 
 class ComputingActor(maxIter : Int) extends Actor {
 	
-	println("Starting ComputingActor " + self.path) // for debug
+	//println("Starting ComputingActor " + self.path) // for debug
 	
 	def receive = {
 		case ComputeMessage(x, y, cs, palette, f, refreshingActor) => {

@@ -30,15 +30,18 @@ class ActorBasedRenderer(
 		val tiles = cs.tiles(tileSize)
 		val system = ActorSystem.create("renderer")
 		val refreshingActor = system.actorOf(Props(new RefreshingActor(img, ip)), name = "refreshingActor")
+		val compActs = 
+    Array.tabulate(tiles.length,tiles(0).length)(
+        (i: Int, j: Int) => system.actorOf(Props(new ComputingActor(maxIter)), name = "comp"+i+"-"+j))
 		for {
 			x <- 0 until tiles.length
 			y <- 0 until tiles(0).length
 			i0 = x * tileSize
 			j0 = cs.height - ((y + 1) * tileSize)
-		} yield {
-			val computingName = "compute" + i0 + "-" + j0
-			val computingActor = system.actorOf(Props(new ComputingActor(maxIter)), name = computingName)
-			computingActor ! ComputeMessage(i0, j0, cs, palette, r, refreshingActor)
+		} {
+			//val computingName = "compute" + i0 + "-" + j0
+			//val computingActor = system.actorOf(Props(new ComputingActor(maxIter)), name = computingName)
+			compActs(x)(y) ! ComputeMessage(i0, j0, tiles(x)(y), palette, r, refreshingActor)
 		}
 	}
 }
